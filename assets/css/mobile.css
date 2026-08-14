@@ -1,0 +1,169 @@
+.topbar {
+  position: static;
+}
+
+.tabs {
+  position: sticky;
+  top: 8px;
+  z-index: 70;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 8px;
+  box-shadow: 0 12px 30px rgba(18, 35, 27, 0.1);
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .tabs {
+  background: rgba(14, 19, 16, 0.8);
+}
+
+@media (max-width: 700px) {
+  .topbar-inner {
+    padding: 10px 12px;
+    border-radius: 18px;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .page-hero {
+    padding: 34px 0 6px;
+  }
+
+  .page-hero h1 {
+    font-size: 30px;
+  }
+
+  .page-hero p {
+    font-size: 15px;
+  }
+
+  .app-shell {
+    padding: 16px 0 40px;
+  }
+
+  .tabs {
+    top: 6px;
+    gap: 6px;
+  }
+
+  .tab {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .panel {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .panel-head h2 {
+    font-size: 22px;
+  }
+
+  .panel-tools,
+  .controls {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .search-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .select {
+    width: 100%;
+  }
+
+  .chip {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions .btn {
+    width: 100%;
+  }
+
+  .recipe-card {
+    padding: 16px;
+  }
+
+  .recipe-title {
+    font-size: 19px;
+  }
+
+  .recipe-description {
+    font-size: 14px;
+  }
+
+  .badge {
+    font-size: 12px;
+    padding: 6px 9px;
+  }
+
+  .tag {
+    font-size: 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-card strong {
+    font-size: 24px;
+  }
+
+  .plan-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .recipe-hero h1 {
+    font-size: 28px;
+  }
+
+  .recipe-actions {
+    flex-direction: column;
+  }
+
+  .recipe-actions .btn {
+    width: 100%;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+  }
+}
