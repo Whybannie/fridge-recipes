@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Холодильник Шеф — кулинарный помощник</title>
+  <meta
+    name="description"
+    content="Подбор рецептов по продуктам, избранное, список покупок, план на неделю, коллекции и статистика."
+  />
+
+  <script src="assets/js/theme.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/ui-updates.css" />
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">HS</span>
+        <span>Холодильник Шеф</span>
+      </a>
+
+      <nav class="nav">
+        <a href="#app">Подбор</a>
+        <a href="#recipes-panel">Рецепты</a>
+      </nav>
+
+      <div class="topbar-actions">
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Переключить тему"
+        >
+          🌙
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="hero-pill">Версия 2.0</div>
+      <h1>Твоя кухня стала умнее</h1>
+      <p>
+        Подбор рецептов по продуктам, избранное, список покупок, план на неделю,
+        коллекции, статистика и достижения.
+      </p>
+    </div>
+  </section>
+
+  <main class="container app-shell" id="app">
+    <nav class="tabs">
+      <button class="tab active" data-view="browse">Подбор</button>
+      <button class="tab" data-view="favorites">Избранное</button>
+      <button class="tab" data-view="shopping">Покупки</button>
+      <button class="tab" data-view="plan">План</button>
+      <button class="tab" data-view="collections">Подборки</button>
+      <button class="tab" data-view="stats">Статистика</button>
+    </nav>
+
+    <section id="view-browse" class="view">
+      <section class="panel glass">
+        <div class="panel-head">
+          <div>
+            <h2>Что есть в холодильнике?</h2>
+            <p class="panel-subtitle">Отметь продукты или найди их через поиск</p>
+          </div>
+
+          <div class="panel-tools">
+            <input
+              id="ingredient-search"
+              class="search-input"
+              type="search"
+              placeholder="Поиск продукта"
+            />
+            <button id="select-all-btn" class="btn btn-secondary btn-small">
+              Выбрать всё
+            </button>
+          </div>
+        </div>
+
+        <div id="ingredients" class="chips"></div>
+
+        <div class="actions">
+          <button id="find-btn" class="btn btn-primary">Найти рецепты</button>
+          <button id="reset-btn" class="btn btn-secondary">Сбросить</button>
+        </div>
+
+        <p id="status" class="status">Выбери хотя бы один продукт.</p>
+      </section>
+
+      <section id="recipes-panel" class="panel glass">
+        <div class="panel-head recipes-head">
+          <div>
+            <h2>Рецепты</h2>
+            <p id="results-meta" class="panel-subtitle">
+              Здесь появятся подходящие варианты
+            </p>
+          </div>
+
+          <div class="controls">
+            <input
+              id="recipe-search"
+              class="search-input"
+              type="search"
+              placeholder="Поиск рецепта"
+            />
+
+            <select id="sort-select" class="select">
+              <option value="best">Лучшие совпадения</option>
+              <option value="time">Сначала быстрые</option>
+              <option value="easy">Сначала лёгкие</option>
+              <option value="alpha">По алфавиту</option>
+              <option value="rating">По оценке</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="category-chips" class="category-chips"></div>
+
+        <div id="recipes-grid" class="recipes"></div>
+      </section>
+    </section>
+
+    <section id="view-favorites" class="view hidden">
+      <section class="panel glass">
+        <div class="panel-head">
+          <div>
+            <h2>Избранное</h2>
+            <p class="panel-subtitle">Твои сохранённые рецепты</p>
+          </div>
+        </div>
+
+        <div id="favorites-grid" class="recipes"></div>
+      </section>
+    </section>
+
+    <section id="view-shopping" class="view hidden">
+      <section class="panel glass">
+        <div class="panel-head">
+          <div>
+            <h2>Список покупок</h2>
+            <p class="panel-subtitle">
+              Сюда можно добавлять недостающие продукты
+            </p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <input
+            id="shopping-input"
+            class="search-input"
+            type="text"
+            placeholder="Добавить продукт"
+          />
+          <button id="shopping-add" class="btn btn-primary btn-small">
+            Добавить
+          </button>
+          <button id="shopping-clear" class="btn btn-secondary btn-small">
+            Очистить
+          </button>
+        </div>
+
+        <div id="shopping-list" class="shopping-list"></div>
+      </section>
+    </section>
+
+    <section id="view-plan" class="view hidden">
+      <section class="panel glass">
+        <div class="panel-head">
+          <div>
+            <h2>План на неделю</h2>
+            <p class="panel-subtitle">
+              Выбери рецепты на каждый день и собери список покупок
+            </p>
+          </div>
+        </div>
+
+        <div id="plan-days"></div>
+
+        <div class="actions">
+          <button id="plan-to-shopping" class="btn btn-primary">
+            Список покупок по плану
+          </button>
+          <button id="plan-clear" class="btn btn-secondary">
+            Очистить план
+          </button>
+        </div>
+
+        <p id="plan-status" class="status"></p>
+      </section>
+    </section>
+
+    <section id="view-collections" class="view hidden">
+      <section class="panel glass">
+        <div class="panel-head">
+          <div>
+            <h2>Подборки</h2>
+            <p class="panel-subtitle">Готовые сценарии выбора рецептов</p>
+          </div>
+        </div>
+
+        <div id="collections-grid" class="recipes"></div>
+      </section>
+    </section>
+
+    <section id="view-stats" class="view hidden">
+      <section class="panel glass">
+        <div class="panel-head">
+          <div>
+            <h2>Статистика</h2>
+            <p class="panel-subtitle">Твоя активность и эко-эффект</p>
+          </div>
+        </div>
+
+        <div id="stats-grid" class="stats-grid"></div>
+
+        <div class="panel-head">
+          <div>
+            <h2>Достижения</h2>
+            <p class="panel-subtitle">Открываются по мере использования</p>
+          </div>
+        </div>
+
+        <div id="achievements-grid" class="achievements-grid"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>Холодильник Шеф — локальный MVP без сервера.</p>
+      <p>Избранное, покупки и план хранятся в твоём браузере.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/store.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>
