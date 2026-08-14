@@ -12,28 +12,7 @@ function getSelectedIngredients() {
   );
 }
 
-const INGREDIENTS_FALLBACK = [
-  "яйца",
-  "молоко",
-  "сыр",
-  "помидоры",
-  "огурцы",
-  "курица",
-  "рис",
-  "картофель",
-  "лук",
-  "морковь",
-  "чеснок",
-  "хлеб",
-  "сосиски",
-  "сметана",
-  "масло сливочное",
-  "масло растительное",
-  "капуста",
-  "грибы",
-  "фарш",
-  "макароны"
-];
+const INGREDIENTS_FALLBACK = ALL_INGREDIENTS;
 
 function fallbackSteps(recipe) {
   const ingredients = recipe.ingredients;
