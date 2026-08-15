@@ -1,0 +1,417 @@
+:root {
+  --wow-bg: #f7f6f2;
+  --wow-surface: rgba(255, 255, 255, 0.78);
+  --wow-card: #ffffff;
+  --wow-soft: #f2f4f2;
+  --wow-text: #101312;
+  --wow-muted: #6a726b;
+  --wow-line: rgba(16, 19, 18, 0.08);
+  --wow-accent: #173f2d;
+  --wow-accent-2: #2c7a52;
+  --wow-gold: #ff9d2e;
+  --wow-shadow: 0 30px 80px rgba(16, 24, 20, 0.12);
+}
+
+[data-theme="dark"] {
+  --wow-bg: #090c0a;
+  --wow-surface: rgba(16, 20, 18, 0.72);
+  --wow-card: rgba(255, 255, 255, 0.05);
+  --wow-soft: rgba(255, 255, 255, 0.07);
+  --wow-text: #eef3ee;
+  --wow-muted: #98a29a;
+  --wow-line: rgba(255, 255, 255, 0.09);
+  --wow-accent: #2f8f5b;
+  --wow-accent-2: #49c183;
+  --wow-gold: #ffb256;
+  --wow-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--wow-bg) !important;
+  color: var(--wow-text) !important;
+}
+
+.bg-decor {
+  display: none !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255, 157, 46, 0.18), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(44, 122, 82, 0.18), transparent 32%),
+    radial-gradient(circle at 70% 85%, rgba(23, 63, 45, 0.12), transparent 30%),
+    var(--wow-bg);
+}
+
+[data-theme="dark"] body::before {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255, 178, 86, 0.08), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(73, 193, 131, 0.1), transparent 32%),
+    radial-gradient(circle at 70% 85%, rgba(47, 143, 91, 0.08), transparent 30%),
+    var(--wow-bg);
+}
+
+::selection {
+  background: rgba(255, 157, 46, 0.3);
+}
+
+:focus-visible {
+  outline: 2px solid var(--wow-accent-2);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.container {
+  width: min(1200px, calc(100% - 40px));
+}
+
+.topbar {
+  position: static;
+  margin-top: 14px;
+}
+
+.topbar-inner {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 18px 50px rgba(16, 24, 20, 0.08);
+  padding: 12px 16px;
+}
+
+[data-theme="dark"] .topbar-inner {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(13, 17, 15, 0.72);
+}
+
+.brand-mark {
+  display: none;
+}
+
+.brand {
+  font-size: 18px;
+  letter-spacing: -0.04em;
+  font-weight: 900;
+}
+
+.nav {
+  display: none;
+}
+
+.page-hero {
+  padding: 78px 0 18px;
+  text-align: center;
+}
+
+.page-hero h1 {
+  margin: 0 auto 14px;
+  max-width: 860px;
+  font-size: clamp(42px, 7vw, 88px);
+  line-height: 0.96;
+  letter-spacing: -0.07em;
+}
+
+.page-hero p {
+  margin: 0 auto;
+  max-width: 640px;
+  color: var(--wow-muted);
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+.hero-pill {
+  display: none !important;
+}
+
+.wow-accent {
+  background: linear-gradient(90deg, #173f2d, #2c7a52 45%, #ff9d2e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[data-theme="dark"] .wow-accent {
+  background: linear-gradient(90deg, #7fd8a8, #49c183 45%, #ffb256);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.tabs {
+  position: sticky;
+  top: 10px;
+  z-index: 80;
+  border-radius: 22px;
+  border: 1px solid var(--wow-line);
+  background: var(--wow-surface);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--wow-shadow);
+  padding: 8px;
+}
+
+.tab {
+  border: 0;
+  background: transparent;
+  color: var(--wow-muted);
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-weight: 800;
+}
+
+.tab.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--wow-accent), var(--wow-accent-2));
+  box-shadow: 0 12px 28px rgba(23, 63, 45, 0.24);
+}
+
+.panel {
+  border-radius: 32px;
+  border: 1px solid var(--wow-line);
+  background: var(--wow-surface);
+  box-shadow: var(--wow-shadow);
+  backdrop-filter: blur(20px);
+}
+
+.panel-head h2 {
+  letter-spacing: -0.04em;
+}
+
+.status {
+  color: var(--wow-muted);
+  font-weight: 700;
+}
+
+.chip {
+  border-radius: 999px;
+  border: 1px solid var(--wow-line);
+  background: var(--wow-card);
+  color: var(--wow-text);
+  font-weight: 700;
+}
+
+.chip.active {
+  background: linear-gradient(135deg, var(--wow-accent), var(--wow-accent-2));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(23, 63, 45, 0.24);
+}
+
+.search-input,
+.select,
+.review-area,
+.profile-field input[type="text"] {
+  border-radius: 16px;
+  border: 1px solid var(--wow-line);
+  background: var(--wow-card);
+  color: var(--wow-text);
+}
+
+.btn {
+  border-radius: 16px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--wow-accent), var(--wow-accent-2));
+  color: #fff;
+  border: 0;
+  box-shadow: 0 14px 30px rgba(23, 63, 45, 0.24);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.btn-secondary,
+.small-btn {
+  background: var(--wow-card);
+  border: 1px solid var(--wow-line);
+  color: var(--wow-text);
+}
+
+.recipes {
+  gap: 20px;
+}
+
+.recipe-card {
+  border-radius: 30px;
+  border: 1px solid var(--wow-line);
+  background: var(--wow-card);
+  box-shadow: 0 10px 30px rgba(16, 24, 20, 0.05);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(16, 24, 20, 0.16);
+  border-color: transparent;
+}
+
+.recipe-card::before {
+  display: none;
+}
+
+.recipe-cover {
+  margin: 14px;
+  border-radius: 24px;
+  min-height: 110px;
+}
+
+.recipe-body {
+  padding: 0 18px 18px;
+}
+
+.recipe-title {
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.recipe-description {
+  font-size: 14px;
+  color: var(--wow-muted);
+}
+
+.recipe-open {
+  width: 100%;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.badge {
+  border-radius: 999px;
+  border: 1px solid var(--wow-line);
+  background: var(--wow-soft);
+  color: var(--wow-muted);
+  font-weight: 800;
+}
+
+.badge.ok {
+  background: rgba(44, 122, 82, 0.12);
+  color: #166a43;
+  border-color: rgba(44, 122, 82, 0.14);
+}
+
+.badge.warn {
+  background: rgba(255, 157, 46, 0.14);
+  color: #925d00;
+  border-color: rgba(255, 157, 46, 0.16);
+}
+
+.badge.category {
+  background: var(--wow-soft);
+  color: var(--wow-text);
+}
+
+[data-theme="dark"] .badge.ok {
+  background: rgba(46, 160, 107, 0.16);
+  color: #7fd8a8;
+  border-color: rgba(46, 160, 107, 0.2);
+}
+
+[data-theme="dark"] .badge.warn {
+  background: rgba(255, 157, 46, 0.14);
+  color: #ffc37a;
+}
+
+.tag {
+  border-radius: 999px;
+  background: var(--wow-soft);
+  border: 1px solid var(--wow-line);
+  color: var(--wow-muted);
+}
+
+.match-progress {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--wow-soft);
+}
+
+.match-progress span {
+  background: linear-gradient(90deg, var(--wow-accent-2), var(--wow-gold));
+}
+
+.empty-state {
+  border-radius: 30px;
+  border: 1px dashed var(--wow-line);
+  background: var(--wow-surface);
+}
+
+.empty-icon {
+  background: var(--wow-card);
+  border-radius: 20px;
+}
+
+.collection-card,
+.stat-card,
+.achievement,
+.shopping-row {
+  border-radius: 24px;
+  border: 1px solid var(--wow-line);
+  background: var(--wow-card);
+  box-shadow: 0 8px 24px rgba(16, 24, 20, 0.04);
+}
+
+.achievement.unlocked {
+  border-color: rgba(44, 122, 82, 0.35);
+  background: rgba(44, 122, 82, 0.08);
+}
+
+.step-num {
+  background: linear-gradient(135deg, var(--wow-accent), var(--wow-accent-2));
+  border-radius: 12px;
+}
+
+.ingredient-row {
+  border-color: var(--wow-line);
+}
+
+.recipe-hero h1 {
+  letter-spacing: -0.05em;
+}
+
+.footer {
+  opacity: 0.75;
+}
+
+.friendly-hint,
+.tab[data-view="profile"],
+#view-profile {
+  display: none !important;
+}
+
+#help-btn {
+  opacity: 0.7;
+}
+
+@media (max-width: 700px) {
+  .page-hero {
+    padding: 46px 0 10px;
+  }
+
+  .page-hero h1 {
+    font-size: 38px;
+  }
+
+  .page-hero p {
+    font-size: 16px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .recipe-title {
+    font-size: 20px;
+  }
+}
