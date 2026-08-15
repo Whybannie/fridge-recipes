@@ -1,3 +1,12 @@
+const CATEGORY_EMOJI = {
+  "завтрак": "🍳",
+  "суп": "🍲",
+  "салат": "🥗",
+  "горячее": "🍝",
+  "гарнир": "🥘",
+  "другое": "🍽️"
+};
+
 const pageEl = document.getElementById("recipe-page");
 const params = new URLSearchParams(window.location.search);
 const recipeId = Number(params.get("id"));
@@ -5,57 +14,34 @@ const recipeId = Number(params.get("id"));
 let currentRecipe = null;
 
 function getSelectedIngredients() {
+  const all = Array.isArray(window.ALL_INGREDIENTS) ? window.ALL_INGREDIENTS : [];
+
   return new Set(
-    Store.getArray(STORAGE.selected).filter((name) =>
-      INGREDIENTS_FALLBACK.includes(name)
-    )
+    Store.getArray(STORAGE.selected).filter((name) => {
+      if (all.length === 0) return true;
+      return all.includes(name);
+    })
   );
 }
 
-const INGREDIENTS_FALLBACK = ALL_INGREDIENTS;
-
 function fallbackSteps(recipe) {
-  const ingredients = recipe.ingredients;
-  const has = (name) => ingredients.includes(name);
-  const steps = [];
+  const ingredients = recipe.ingredients || [];
+  const time = recipe.time || 20;
 
-  steps.push(`Подготовь все ингредиенты: ${ingredients.join(", ")}.`);
+  return [
+    `Подготовь ингредиенты: ${ingredients.join(", ")}.`,
+    "Разогрей сковороду, кастрюлю или духовку в зависимости от блюда.",
+    "Смешай и приготовь продукты так, чтобы блюдо было готово.",
+    `Ориентируйся примерно на ${time} минут и вкус.`
+  ];
+}
 
-  if (recipe.category === "завтрак") {
-    if (has("яйца")) steps.push("Разбей яйца в миску и слегка взбей вилкой.");
-    if (has("молоко")) steps.push("Добавь молоко и ещё раз перемешай.");
-    steps.push("Разогрей сковороду на среднем огне и добавь масло, если оно есть в составе.");
-    steps.push(`Готовь около ${recipe.time} минут, пока блюдо не будет готово.`);
-  } else if (recipe.category === "салат") {
-    steps.push("Помой и нарежь овощи.");
-    if (has("курица")) steps.push("Отвари или обжарь курицу и нарежь её.");
-    if (has("яйца")) steps.push("Отвари яйца и нарежь их.");
-    steps.push("Смешай все ингредиенты в миске.");
-    steps.push("Заправь сметаной или маслом, посоли по вкусу.");
-  } else if (recipe.category === "суп") {
-    if (has("курица")) {
-      steps.push("Отвари курицу в кастрюле с водой, снимая пену.");
-    } else {
-      steps.push("Поставь кастрюлю с водой на огонь и доведи до кипения.");
-    }
-
-    steps.push("Нарежь картофель и овощи, добавь в бульон.");
-    steps.push(`Вари на среднем огне около ${recipe.time} минут.`);
-
-    if (has("сметана")) steps.push("Подавай со сметаной.");
-  } else {
-    steps.push("Нарежь овощи и основные ингредиенты.");
-    steps.push("Разогрей сковороду или кастрюлю с маслом.");
-
-    if (has("курица") || has("фарш")) {
-      steps.push("Обжарь мясо до готовности.");
-    }
-
-    steps.push("Добавь остальные ингредиенты и готовь до мягкости.");
-    steps.push(`Готовь примерно ${recipe.time} минут, при необходимости добавь соль и специи.`);
+function getSteps(recipe) {
+  if (Array.isArray(recipe.steps) && recipe.steps.length > 0) {
+    return recipe.steps;
   }
 
-  return steps;
+  return fallbackSteps(recipe);
 }
 
 function showNotice(text) {
@@ -75,9 +61,10 @@ function updateFavoriteButton() {
 
   if (!button) return;
 
-  button.textContent = isFavorite()
-    ? "Убрать из избранного"
-    : "В избранное";
+  const favorite = isFavorite();
+
+  button.textContent = favorite ? "♥ В избранном" : "♡ В избранное";
+  button.classList.toggle("rw-fav-active", favorite);
 }
 
 function updateCookedButton() {
@@ -88,8 +75,8 @@ function updateCookedButton() {
   const count = Store.getCookedCount(currentRecipe.id);
 
   button.textContent = count > 0
-    ? `Приготовлено ×${count}. Отметить ещё раз`
-    : "Отметить приготовленным";
+    ? `🍳 Приготовлено ×${count}`
+    : "🍳 Приготовить";
 }
 
 function renderStars() {
@@ -104,7 +91,7 @@ function renderStars() {
   for (let i = 1; i <= 5; i += 1) {
     const star = document.createElement("button");
     star.type = "button";
-    star.className = `star${i <= rating ? " active" : ""}`;
+    star.className = `rw-star${i <= rating ? " active" : ""}`;
     star.textContent = "★";
 
     star.addEventListener("click", () => {
@@ -117,7 +104,7 @@ function renderStars() {
   }
 }
 
-function bindRecipeActions() {
+function bindActions() {
   const favoriteBtn = document.getElementById("favorite-btn");
   const cookedBtn = document.getElementById("cooked-btn");
   const shoppingBtn = document.getElementById("shopping-btn");
@@ -149,17 +136,17 @@ function bindRecipeActions() {
     shoppingBtn.addEventListener("click", () => {
       const selected = getSelectedIngredients();
 
-      const missing = currentRecipe.ingredients.filter(
-        (ingredient) => !selected.has(ingredient)
-      );
+      const missing = selected.size
+        ? currentRecipe.ingredients.filter((ingredient) => !selected.has(ingredient))
+        : currentRecipe.ingredients;
 
       if (missing.length === 0) {
-        showNotice("Все продукты уже есть в твоём списке продуктов.");
+        showNotice("Все продукты уже есть.");
         return;
       }
 
       Store.addShoppingItems(missing);
-      showNotice(`Добавлено в список покупок: ${missing.join(", ")}`);
+      showNotice(`Добавлено в покупки: ${missing.join(", ")}`);
     });
   }
 
@@ -187,104 +174,147 @@ function bindRecipeActions() {
 function renderRecipe(recipe) {
   currentRecipe = recipe;
 
-  const selected = getSelectedIngredients();
-  const matched = recipe.ingredients.filter((ingredient) =>
-    selected.has(ingredient)
-  ).length;
+  document.title = `${recipe.title} — Холодильник Шеф`;
 
-  const steps = Array.isArray(recipe.steps) && recipe.steps.length > 0
-    ? recipe.steps
-    : fallbackSteps(recipe);
+  const selected = getSelectedIngredients();
+  const matched = recipe.ingredients.filter((ingredient) => selected.has(ingredient)).length;
+  const missing = recipe.ingredients.filter((ingredient) => !selected.has(ingredient));
+
+  const seed = recipe.id || recipe.title.length;
+  const hue = (seed * 47) % 360;
+  const emoji = CATEGORY_EMOJI[recipe.category] || "🍽️";
+
+  const steps = getSteps(recipe);
+  const review = Store.getReview(recipe.id);
+
+  const stepsHtml = steps
+    .map((step, index) => {
+      return `
+        <li class="rw-step">
+          <span class="rw-step-num">${index + 1}</span>
+          <p>${step}</p>
+        </li>
+      `;
+    })
+    .join("");
 
   const ingredientsRows = recipe.ingredients
     .map((ingredient) => {
       const hasIngredient = selected.has(ingredient);
 
-      const stateClass = hasIngredient ? "ok" : "no";
-      const label = hasIngredient ? "есть" : selected.size > 0 ? "нет" : "—";
+      const stateClass = selected.size === 0
+        ? "unknown"
+        : hasIngredient
+        ? "has"
+        : "no";
+
+      const icon = selected.size === 0
+        ? "•"
+        : hasIngredient
+        ? "✓"
+        : "!";
+
+      const pill = selected.size === 0
+        ? "—"
+        : hasIngredient
+        ? "есть"
+        : "нет";
 
       return `
-        <div class="ingredient-row">
+        <div class="rw-ingredient ${stateClass}">
+          <span class="rw-ingredient-state">${icon}</span>
           <span>${ingredient}</span>
-          <span class="ingredient-state ${stateClass}">${label}</span>
+          <span class="rw-pill">${pill}</span>
         </div>
       `;
     })
     .join("");
 
-  const stepsHtml = steps
-    .map((step, index) => {
-      return `
-        <div class="step">
-          <span class="step-num">${index + 1}</span>
-          <p>${step}</p>
-        </div>
-      `;
-    })
-    .join("");
+  let ingredientNote = "";
 
-  const matchBadge = selected.size
-    ? `<span class="badge ok">Совпало: ${matched} из ${recipe.ingredients.length}</span>`
+  if (selected.size === 0) {
+    ingredientNote = `
+      <div class="rw-note">
+        Отметь продукты на главной, чтобы видеть, что уже есть.
+      </div>
+    `;
+  } else if (missing.length === 0) {
+    ingredientNote = `
+      <div class="rw-all">
+        Все продукты есть 🎉
+      </div>
+    `;
+  } else {
+    ingredientNote = `
+      <div class="rw-missing">
+        Не хватает: ${missing.join(", ")}
+      </div>
+    `;
+  }
+
+  const selectedBadge = selected.size
+    ? `<span class="rw-badge">Совпало: ${matched} из ${recipe.ingredients.length}</span>`
     : "";
 
-  const rating = Store.getRating(recipe.id);
-  const review = Store.getReview(recipe.id);
-
   pageEl.innerHTML = `
-    <a class="back-link" href="index.html">← Ко всем рецептам</a>
+    <a class="rw-back" href="index.html">← Назад</a>
 
-    <section class="panel glass recipe-hero">
-      <div class="meta">
-        <span class="badge category">${recipe.category || "рецепт"}</span>
-        <span class="badge">⏱ ${recipe.time} мин</span>
-        <span class="badge">${recipe.difficulty}</span>
-        ${rating ? `<span class="badge ok">Твоя оценка: ★ ${rating}</span>` : ""}
-        ${matchBadge}
+    <section class="rw-hero">
+      <div
+        class="rw-cover"
+        style="background: linear-gradient(135deg, hsl(${hue}, 78%, 45%), hsl(${(hue + 50) % 360}, 78%, 62%))"
+      >
+        <div class="rw-cover-badges">
+          <span class="rw-badge">${emoji} ${recipe.category || "рецепт"}</span>
+          <span class="rw-badge">⏱ ${recipe.time} мин</span>
+          <span class="rw-badge">${recipe.difficulty}</span>
+          ${selectedBadge}
+        </div>
+
+        <span class="rw-emoji">${emoji}</span>
       </div>
 
-      <h1>${recipe.title}</h1>
-      <p class="recipe-hero-subtitle">${recipe.description}</p>
+      <div class="rw-hero-content">
+        <h1>${recipe.title}</h1>
+        <p class="rw-subtitle">${recipe.description}</p>
 
-      <div class="recipe-actions">
-        <button id="favorite-btn" class="btn btn-secondary">В избранное</button>
-        <button id="cooked-btn" class="btn btn-secondary">Отметить приготовленным</button>
-        <button id="shopping-btn" class="btn btn-secondary">Добавить недостающее в покупки</button>
-        <button id="share-btn" class="btn btn-secondary">Поделиться</button>
+        <div class="rw-actions">
+          <button id="favorite-btn" class="rw-btn" type="button"></button>
+          <button id="cooked-btn" class="rw-btn rw-primary" type="button"></button>
+          <button id="shopping-btn" class="rw-btn" type="button">🛒 В покупки</button>
+          <button id="share-btn" class="rw-btn" type="button">🔗 Поделиться</button>
+        </div>
+
+        <p id="recipe-notice" class="rw-notice"></p>
       </div>
-
-      <p id="recipe-notice" class="notice"></p>
     </section>
 
-    <div class="recipe-grid">
-      <section class="panel glass">
+    <section class="rw-grid">
+      <aside class="rw-panel">
         <h2>Ингредиенты</h2>
-        <div class="ingredient-list">${ingredientsRows}</div>
-        ${
-          selected.size === 0
-            ? `<p class="panel-subtitle">Отметь продукты на главной, чтобы увидеть, что уже есть.</p>`
-            : ""
-        }
-      </section>
+        <div class="rw-ingredients">${ingredientsRows}</div>
+        ${ingredientNote}
+      </aside>
 
-      <section class="panel glass">
+      <section class="rw-panel">
         <h2>Приготовление</h2>
-        <div class="steps-list">${stepsHtml}</div>
+        <ol class="rw-steps">${stepsHtml}</ol>
       </section>
-    </div>
+    </section>
 
-    <section class="panel glass" style="margin-top: 26px;">
-      <h2>Твоя оценка и отзыв</h2>
+    <section class="rw-panel rw-rating">
+      <h2>Оценка</h2>
 
-      <div id="stars" class="stars"></div>
+      <div id="stars" class="rw-stars"></div>
 
       <textarea
         id="review-text"
-        class="review-area"
+        class="rw-textarea"
         placeholder="Как получилось? Что бы ты изменил?"
       >${review}</textarea>
 
-      <div class="actions">
-        <button id="save-review" class="btn btn-primary">Сохранить отзыв</button>
+      <div class="rw-actions" style="margin-top: 14px;">
+        <button id="save-review" class="rw-btn" type="button">Сохранить отзыв</button>
       </div>
     </section>
   `;
@@ -292,17 +322,17 @@ function renderRecipe(recipe) {
   updateFavoriteButton();
   updateCookedButton();
   renderStars();
-  bindRecipeActions();
+  bindActions();
 }
 
 function renderNotFound() {
   pageEl.innerHTML = `
-    <a class="back-link" href="index.html">← Ко всем рецептам</a>
+    <a class="rw-back" href="index.html">← Назад</a>
 
-    <section class="panel glass">
+    <section class="rw-panel">
       <h1>Рецепт не найден</h1>
-      <p class="recipe-hero-subtitle">
-        Возможно, ссылка устарела. Вернись на главную и выбери рецепт из списка.
+      <p class="rw-subtitle">
+        Вернись на главную и выбери рецепт из списка.
       </p>
     </section>
   `;
