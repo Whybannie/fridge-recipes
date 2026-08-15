@@ -550,7 +550,7 @@ if (typeof allRecipes !== "undefined") {
     injectProfileTab();
     injectRandomButton();
     injectHints();
-    showOnboarding(false);
+    // showOnboarding(false);
   }
 
   window.createRecipeCard = friendlyRecipeCard;
